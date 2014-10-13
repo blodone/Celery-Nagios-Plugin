@@ -1,0 +1,3 @@
+celerymon
+nagaconda
+requests
