@@ -53,44 +53,15 @@ except Exception as e:
     check_api.unknown_error("%s health check response was malformed: %s" % (check_api.options.action, e))
 
 if len(content) == 0:
-    print "Status Ok, nothing in celery queue at the moment"
-    sys.exit(0)
+    print "Status Warning, no Celery workers at the moment"
+    sys.exit(1)
 
 if check_api.options.action == "nodeup":
-    response = requests.get("%s:%d/api/worker/%s" % (check_api.options.host, int(check_api.options.port), check_api.options.node))
-
-    try:
-        response.raise_for_status()
-    except Exception as e:
-        print "Status Critical, %s node not found" % check_api.options.node
+    if check_api.options.node not in content:
+        print "Status Critical, {} node not found".format(check_api.options.node)
         sys.exit(2)
-
-    try:
-        content = json.loads(response.content)
-    except Exception as e:
-        check_api.unknown_error("%s health check response was malformed: %s" % (check_api.options.action, e))
 else:
-    response = requests.get("%s:%d/api/tasks/?limit=%d" % (check_api.options.host, int(check_api.options.port), check_api.options.limit))
-
-    try:
-        response.raise_for_status()
-    except Exception as e:
-        print "Status Critical, task list for node %s cannot be retrieved" % check_api.options.node
-        sys.exit(2)
-
-    try:
-        content = json.loads(response.content)
-    except Exception as e:
-        check_api.unknown_error("%s health check response was malformed: %s" % (check_api.options.action, e))
-
-    failed = []
-    for task in content:
-        if task[1]["failed"]:
-            failed.append(task[0])
-
-    if failed:
-        print "Status Warning, the last %d tasks for node %s contain failures: %s" % (check_api.options.limit, check_api.options.node, failed)
-        sys.exit(1)
+    print "Status OK, {} nodes up".format(len(content))
 
 check_api.set_status_message("Celery health check successful")
 
