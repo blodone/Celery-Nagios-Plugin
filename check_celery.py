@@ -1,4 +1,4 @@
-#! /usr/bin/python
+#!/usr/bin/env python
 
 """
 check_celery.py
@@ -9,7 +9,7 @@ placed in the following directory on the host machine: /usr/local/nagios/libexec
 """
 import sys
 import requests
-import simplejson as json
+import json
 from NagAconda import Plugin
 
 check_api = Plugin("Used to determine the status of a Celery worker.", "1.0")
@@ -84,3 +84,4 @@ else:
 check_api.set_status_message("Celery health check successful")
 
 check_api.finish()
+
