@@ -1,7 +1,7 @@
 Celery-Nagios-Plugin
 ====================
 
-A simple Nagios plugin that provides monitoring support for Celery. Must have `celerymon` module installed and running to work.
+A simple Nagios plugin that provides monitoring support for Celery by requesting flower API. Must have `flower` module installed and running to work.
 
 
 --
